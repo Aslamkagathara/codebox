@@ -385,3 +385,35 @@ if(is_blog ()){
 
 $biziloans_banner_image        = get_field( 'biziloans_banner_image',$id ); 
 ?>
+<!-- pagination  -->
+<div class="blog_pagination">
+  <nav class="navigation pagination">
+      <?php
+      global $wp_query;
+      $max_num_page = $wp_query->max_num_pages;
+
+      if ($max_num_page > 1){
+          $current_page = max(1, get_query_var('paged'));
+          echo paginate_links(array(
+              'base'      => get_pagenum_link(1) . '%_%',
+              'format'    => '/page/%#%',
+              'current'   => $current_page,
+              'total'     => $max_num_page,
+              'prev_text' => '<-',
+              'next_text' => '->'
+          ));
+      }
+      ?>
+  </nav>
+</div>
+<?php
+  echo paginate_links(); 
+                      
+  // Previous/next page navigation.
+  the_posts_pagination(array(
+      'screen_reader_text' => __(' ', 'automonkey'),
+      'prev_text'          => __('prev page', 'automonkey'),
+      'next_text'          => __('Next Page', 'automonkey'),
+      'before_page_number' => '',
+  ));
+?>

@@ -6,10 +6,18 @@
 <?php get_header(); ?>
 
 
+ <!-- template part get in any pages -->
+ <?
+get_template_part( 'template-parts/common_banner');
+?>
 
 <?php get_header();  // for template calling 
 /* Template Name: About  */
 ?>
+
+<img src="<?php echo get_template_directory_uri(); ?>/images/mindset.jpg" />
+
+
 <?php
 /**
  * Enqueue scripts and styles.
@@ -142,8 +150,35 @@ function custom_loginlogo_url($url) {
 ?>
 
 
+<!-- admin logo  -->
+<?php
+function ds_admin_login_logo() {
+    $logo = get_field('logo','option'); //id return
+    $img_url = wp_get_attachment_url($logo);
+    ?>
+<style type="text/css">
+#login h1 a, .login h1 a {
+background-image: url('<?php echo $img_url; ?>');
+height:55px;
+width:270px;
+background-size: 270px 100px;
+background-repeat: no-repeat;
+padding-bottom: 45px;
+}
+</style>
+<?php }
+add_action( 'login_enqueue_scripts', 'ds_admin_login_logo' );
+
+add_filter( 'login_headerurl', 'custom_loginlogo_url' );
+function custom_loginlogo_url($url) {
+     return site_url();
+}
+?>
+
+
+
+<!---------------------------------------  ACF code for ------------------------------------------------->
 <?php 
-// ACF code for
     $about_us_title = get_field('about_us_title'); // for title 
     $banner_main_title = get_field('banner_main_title'); // for title
     $banner_left_image = get_field('banner_left_image'); // for image
@@ -218,3 +253,124 @@ if( $banner_image ) {
     <?php endwhile; ?>
     </ul>
 <?php endif; ?>
+
+
+<!-- add new class in body base on condition -->
+<?php 
+function custom_body_class_fun($classes) {
+    if (is_user_logged_in()) {
+        $classes[] = 'login_user'; // your custom class name
+    }
+    return $classes;
+}
+add_filter('body_class', 'custom_body_class_fun'); ?>
+
+
+<!-- post per page news Post wp query for post in function.phpfile  -->
+<?php
+
+function set_posts_per_page_for_towns_cpt( $query ) {
+	if ( !is_admin() && $query->is_main_query() && is_post_type_archive( 'news' ) ) {
+	  $query->set( 'posts_per_page', '9' );
+	}
+    //meta
+    if ( !is_admin() && $query->is_main_query() && is_post_type_archive( 'news' ) ) {
+      $query->set( 'meta_key', 'bcware_news_post_add_featured_stories' );
+      $query->set( 'meta_value', 'yes' );
+    }
+  }
+add_action( 'pre_get_posts', 'set_posts_per_page_for_towns_cpt' );
+
+?>
+<!--  SVG support -->
+<?php
+function cc_mime_types($mimes) {
+ $mimes['svg'] = 'image/svg+xml';
+ return $mimes;
+}
+add_filter('upload_mimes', 'cc_mime_types');
+
+function ds_add_file_types_to_uploads($file_types){
+    $new_filetypes = array();
+    $new_filetypes['svg'] = 'image/svg+xml';
+    $file_types = array_merge($file_types, $new_filetypes );
+    return $file_types;
+}
+add_filter('upload_mimes', 'ds_add_file_types_to_uploads');
+
+?>
+
+<!-- svg image code js -->
+<?php
+
+$(".main-logo img").each(function () {
+var $img = jQuery(this);
+var attributes = $img.prop("attributes");
+var imgURL = $img.attr("src");
+$.get(imgURL, function (data) {
+var $svg = $(data).find('svg');
+$svg = $svg.removeAttr('xmlns:a');
+$.each(attributes, function() {
+  $svg.attr(this.name, this.value);
+});
+$img.replaceWith($svg);
+});
+});
+
+?>
+<!--  dynamic year in footer -->
+<?php 
+
+// For Footer copyright year
+
+function year_shortcode() {
+    $year = date('Y');
+    return $year;
+}
+add_shortcode('year', 'year_shortcode');
+
+
+/*dynamic year */
+function currentYear( $atts ){
+  return date('Y');
+}
+add_shortcode( 'dynamic_year', 'currentYear' );
+// year shortcode
+function year_shortcode () {
+    $year = date_i18n ('Y');
+    return $year;
+}
+add_shortcode ('year', 'year_shortcode');
+?>
+
+
+<!-- common banner -->
+
+<?php 
+function is_blog () {
+    return ( is_archive() || is_author() || is_category() || is_home() || is_single() || is_tag()) && 'post' == get_post_type();
+}
+if(is_page())
+{
+    $id  = get_the_ID();
+
+}
+if(is_archive('faq') && is_post_type_archive('faq')){
+    $id        = 197;
+    $title     = get_the_title( 197 );
+}
+if(is_archive('testimonials') && is_post_type_archive('testimonials')){
+    $id        = 201;
+    $title     = get_the_title( 201 );
+}
+if(is_archive('team') && is_post_type_archive('team')){
+    $id        = 133;
+    $title     = get_the_title( 133 );
+}
+if(is_blog ()){
+    $id        = 137;
+    $title     = get_the_title( 137 );
+}
+
+$biziloans_banner_image        = get_field( 'biziloans_banner_image',$id ); 
+?>

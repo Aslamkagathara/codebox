@@ -1,11 +1,19 @@
+<!-- code start here -->
+
+<!-- calling Footer -->
+<?php get_footer(); ?>
+<!-- Calling Header -->
+<?php get_header(); ?>
 
 
 
+<?php get_header();  // for template calling 
+/* Template Name: About  */
+?>
+<?php
 /**
  * Enqueue scripts and styles.
  */
-<?php
-
  include('inc/enqueue-script.php');
  include('inc/dd-function.php');
  include('inc/custom-posttype.php');
@@ -109,15 +117,39 @@ register_taxonomy('affiliate-category', 'affiliate-logos', array(
 add_action( 'init', 'add_custom_taxonomies');
 ?>
 
+<!-- Calling admin logo -->
+<?php
+
+function site_logo_adminlogin() { 
+?> 
+<style type="text/css"> 
+body.login div#login h1 a {
+    background-image: url('<?php echo get_stylesheet_directory_uri()."/assets/images/mvs-admin-logo.png";?>'); 
+    background-size: 150px;
+    width: 150px;
+    height: 145px;
+
+} 
+</style>
+ <?php 
+} 
+add_action( 'login_enqueue_scripts', 'site_logo_adminlogin' );
+
+add_filter( 'login_headerurl', 'custom_loginlogo_url' );
+function custom_loginlogo_url($url) {
+     return site_url();
+}
+?>
+
 
 <?php 
 // ACF code for
-    $about_us_title = get_field('about_us_title'); // for title
+    $about_us_title = get_field('about_us_title'); // for title 
     $banner_main_title = get_field('banner_main_title'); // for title
     $banner_left_image = get_field('banner_left_image'); // for image
 ?>
-
-<?php // for title
+<!--  For title-->
+<?php 
     if(!empty($about_us_title)){
         echo "<h5>".$about_us_title."</h5>";
     }
@@ -125,19 +157,64 @@ add_action( 'init', 'add_custom_taxonomies');
         echo "<h1>".$banner_main_title."</h1>";
     }
 ?>
-
-<?php // For image
+<!--  For image -->
+<?php 
 if(!empty($banner_left_image)){
     echo "<img src='".$banner_left_image['url']."' alt='".$banner_left_image['alt']."'>";
 }
 ?>
 
-
+<!--  for link -->
 <?php 
-    $what_we_do_link = get_field('what_we_do_link'); // for link
+    $what_we_do_link = get_field('what_we_do_link'); 
 ?>
  <?php
-  if(!empty($what_we_do_link)){ // for link
+  if(!empty($what_we_do_link)){ 
       echo "<a class='btn-yellow arrow-icon' href='".$what_we_do_link['url']."' target='".$what_we_do_link['target']."'>".$what_we_do_link['title']."</a>";
   }
 ?>
+
+<!-- Different type of title calling  -->
+<?php
+  $page_title  = get_field( 'title' ); 
+  $section_title  = get_field( 'section_title' ); 
+  $banner_image = get_field( 'banner' );
+?>
+<h1><?php echo $page_title ?></h1>
+<h3><?php echo $section_title ?></h3> <!-- Calling  feild name -->
+<h3><?php echo get_field('field_64c8ef8d4da77'); ?></h3> <!-- Calling field key -->
+
+<!-- Different type of Image calling  -->
+
+<!--  Calling Image URL -->
+<img src="<?php echo $banner_image ?>" alt="" class="image-bannner">  
+
+<!--  Calling  Image array -->
+<?php  if( $banner_image ) {
+  echo wp_get_attachment_image($banner_image['ID'], 'full', false, array('class' => 'image-responsive') ); 
+  } 
+?> 
+
+<!--  Calling Image id -->
+<?php 
+$size = 'full'; // (thumbnail, medium, large, full or custom size)
+if( $banner_image ) {
+    echo wp_get_attachment_image( $banner_image, $size );
+} ?>
+
+
+<!-- Calling Reapeter -->
+<?php if( have_rows('image_slider') ): ?>
+    <ul class="slides">
+    <?php while( have_rows('image_slider') ): the_row(); 
+          $image = get_sub_field( 'slide' );
+          $link = get_sub_field( 'slide_btn' );
+        ?>
+        <li>
+            <img src="<?php echo $image ?>" alt="" class="image-bannner">
+            <p><?php the_sub_field('slide_title'); ?></p>
+            <a href="<?php echo $link ?>"> Read more</a>
+        </li>
+    <?php endwhile; ?>
+    </ul>
+<?php endif; ?>

@@ -1,15 +1,17 @@
 
-<?php
 
 
 /**
  * Enqueue scripts and styles.
  */
+<?php
 
  include('inc/enqueue-script.php');
  include('inc/dd-function.php');
  include('inc/custom-posttype.php');
+ ?>
 
+ <?php
 
 function ees_shipping_scripts() {
 	wp_enqueue_style( 'ees_shipping-style', get_stylesheet_uri(), array(), _S_VERSION );
@@ -29,6 +31,8 @@ function ees_shipping_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'ees_shipping_scripts' );
 
+?>
+<?php
 
 // Register menu 
 
@@ -41,6 +45,8 @@ add_action( 'wp_enqueue_scripts', 'ees_shipping_scripts' );
 			'menu-8' => esc_html__( 'footer_three', 'ees_shipping' ),
 		)
 	);
+?>
+<?php
 
 // Custom post code
 function create_posttype() {
@@ -71,6 +77,8 @@ function create_posttype() {
     );
 }
 add_action( 'init', 'create_posttype' );
+?>
+<?php
 
 // Category post code
 function add_custom_taxonomies() {
@@ -99,8 +107,37 @@ register_taxonomy('affiliate-category', 'affiliate-logos', array(
 
 }
 add_action( 'init', 'add_custom_taxonomies');
+?>
 
 
+<?php 
+// ACF code for
+    $about_us_title = get_field('about_us_title'); // for title
+    $banner_main_title = get_field('banner_main_title'); // for title
+    $banner_left_image = get_field('banner_left_image'); // for image
+?>
+
+<?php // for title
+    if(!empty($about_us_title)){
+        echo "<h5>".$about_us_title."</h5>";
+    }
+    if(!empty($banner_main_title)){
+        echo "<h1>".$banner_main_title."</h1>";
+    }
+?>
+
+<?php // For image
+if(!empty($banner_left_image)){
+    echo "<img src='".$banner_left_image['url']."' alt='".$banner_left_image['alt']."'>";
+}
+?>
 
 
+<?php 
+    $what_we_do_link = get_field('what_we_do_link'); // for link
+?>
+ <?php
+  if(!empty($what_we_do_link)){ // for link
+      echo "<a class='btn-yellow arrow-icon' href='".$what_we_do_link['url']."' target='".$what_we_do_link['target']."'>".$what_we_do_link['title']."</a>";
+  }
 ?>

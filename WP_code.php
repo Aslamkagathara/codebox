@@ -15,7 +15,18 @@ get_template_part( 'template-parts/common_banner');
 /* Template Name: About  */
 ?>
 
+
+<!-- Files no path -->
 <img src="<?php echo get_template_directory_uri(); ?>/images/mindset.jpg" />
+
+<!-- Main theme hoi tyare -->
+<img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="" />
+
+<!-- Child theme hoi tyare -->
+<img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/ro-original-small.png" />
+<!-- CSS Path -->
+
+<!--  background-image: url("../images/home_ca_min.jpg"); -->
 
 
 <?php

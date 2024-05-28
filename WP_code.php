@@ -23,6 +23,7 @@ get_template_part( 'template-parts/common_banner');
 <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="" />
 
 <!-- Child theme hoi tyare -->
+
 <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/ro-original-small.png" />
 <!-- CSS Path -->
 
@@ -416,4 +417,23 @@ $biziloans_banner_image        = get_field( 'biziloans_banner_image',$id );
       'next_text'          => __('Next Page', 'automonkey'),
       'before_page_number' => '',
   ));
+?>
+
+
+<!-- Template parts -->
+
+<?php 
+/* Template Name: About Us */ 
+
+get_header();
+custom_breadcrumbs(); 
+
+
+get_template_part('template-parts/about-us/template' , 'about_benner');
+get_template_part('template-parts/about-us/template' , 'about_middle_section');
+get_template_part('template-parts/about-us/template' , 'about_bottom');
+
+
+get_footer();
+
 ?>
